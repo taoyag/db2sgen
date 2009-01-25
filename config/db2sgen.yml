@@ -1,0 +1,13 @@
+database:
+  adapter:  mysql
+  host:     localhost
+  username: taoyag
+  password: taoyag
+  database: test
+  socket:   /opt/local/var/run/mysql5/mysqld.sock
+  encoding: utf8
+
+tables:
+ - sample
+ - sample2
+ - users

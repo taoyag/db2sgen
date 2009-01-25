@@ -18,14 +18,10 @@ ActiveRecord::Base.establish_connection(config['database'])
 AdapterLoader.new(config['database']).load
 
 # collect table definitions
-tables = []
-config['tables'].each do |name|
-  tables << TableDefinition.generate(name)
-end
-
+tables = TableDefinition.collect(config['tables'])
 tables.each do |t|
   puts "-- #{t.table_name}"
   t.columns.each do |c|
-    puts " #{c.name} #{c.type} #{'primary key' if c.primary}"
+    puts " #{c.name} #{c.type} #{c.precision} #{'primary key' if c.primary}"
   end
 end

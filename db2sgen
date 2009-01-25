@@ -1,27 +1,9 @@
 #!/usr/bin/env ruby
-require 'rubygems'
-require 'activerecord'
 require 'yaml'
 
-require File.expand_path('lib/definitions', File.dirname(__FILE__))
-require File.expand_path('lib/ext_activerecord', File.dirname(__FILE__))
-require File.expand_path('lib/connection_adapters/ext_adapter', File.dirname(__FILE__))
+require File.expand_path('lib/source_generator', File.dirname(__FILE__))
 
-# load config
-CONFIG = ARGV.shift || "db2sgen.yml"
-config = YAML.load(File.read(CONFIG))
+CONFIG_FILE = ARGV.shift || "db2sgen.yml"
+config = YAML.load File.read(CONFIG_FILE) 
 
-# establish connection
-ActiveRecord::Base.establish_connection(config['database'])
-
-# load ext adapter
-AdapterLoader.new(config['database']).load
-
-# collect table definitions
-tables = TableDefinition.collect(config['tables'])
-tables.each do |t|
-  puts "-- #{t.table_name}"
-  t.columns.each do |c|
-    puts " #{c.name} #{c.type} #{c.precision} #{'primary key' if c.primary}"
-  end
-end
+SourceGenerator.new(config).generate

@@ -1,13 +1,9 @@
 class AdapterLoader
-  def initialize(config)
-    @config = config
-  end
-
-  def load
+  def self.load(config)
     begin
-      require File.expand_path("ext_#{@config['adapter']}_adapter", File.dirname(__FILE__))
+      require File.expand_path("ext_#{config['adapter']}_adapter", File.dirname(__FILE__))
     rescue
-      raise "failed to load ext_#{@config['adapter']}_adapter"
+      raise "failed to load ext_#{config['adapter']}_adapter"
     end
   end
 end

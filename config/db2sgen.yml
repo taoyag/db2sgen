@@ -7,7 +7,11 @@ database:
   socket:   /opt/local/var/run/mysql5/mysqld.sock
   encoding: utf8
 
+template_dir: template
+out_dir: output
+
 tables:
  - sample
  - sample2
  - users
+ 

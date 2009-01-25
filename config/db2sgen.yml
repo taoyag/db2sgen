@@ -7,8 +7,8 @@ database:
   socket:   /opt/local/var/run/mysql5/mysqld.sock
   encoding: utf8
 
-template_dir: template
-out_dir: output
+template_dir: db2sgen/testdata/template
+out_dir: db2sgen/testdata/output
 
 tables:
  - sample

@@ -5,6 +5,7 @@ require 'erb'
 require 'fileutils'
 
 require File.expand_path('definitions', File.dirname(__FILE__))
+require File.expand_path('type_mapper', File.dirname(__FILE__))
 require File.expand_path('ext_activerecord', File.dirname(__FILE__))
 require File.expand_path('connection_adapters/ext_adapter', File.dirname(__FILE__))
 
@@ -61,9 +62,9 @@ class SourceGenerator
   end
 
   def out(table, template)
-    #TODO mapper, filename
-    erb = ERB.new(File.read(File.expand_path(template, @template_dir)))
-    r_file = File.expand_path(template, @out_dir)
+    m      = TypeMapper.load_mapper template
+    erb    = ERB.new(File.read(File.expand_path(template, @template_dir)))
+    r_file = File.expand_path(m.file_name(table, template), @out_dir)
     puts r_file
     FileUtils.mkdir_p(File.dirname(r_file)) unless FileTest.exist?(File.dirname(r_file))
     File.open(r_file, "w") do |f|

@@ -24,9 +24,11 @@ class TypeMapper
   end
 
   def file_name(table, filename)
-    name = table.table_name.capitalize
+    name     = table.table_name.capitalize
+    dirname  = File.dirname(filename)
     basename = File.basename(filename)
-    basename.sub(/_?[Tt]able_?/, name)
+
+    File.join dirname, basename.sub(/_?[Tt]able_?/, name)
   end
 
   def class_name(table)
@@ -39,6 +41,14 @@ class TypeMapper
 
   def name(column)
     column.name
+  end
+
+  def method_missing(name, &args)
+    if /^type_(.+)$/ =~ name.to_s
+      $1
+    else
+      super
+    end
   end
 end
 

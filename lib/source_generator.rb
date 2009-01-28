@@ -1,4 +1,3 @@
-DEBUG = true
 require 'rubygems'
 require 'activerecord'
 require 'erb'
@@ -9,6 +8,10 @@ require File.expand_path('type_mapper', File.dirname(__FILE__))
 require File.expand_path('ext_activerecord', File.dirname(__FILE__))
 require File.expand_path('connection_adapters/ext_adapter', File.dirname(__FILE__))
 
+#
+# データベースのテーブル情報とテンプレートファイルから
+# ソースファイルを生成する.
+#
 class SourceGenerator
   attr_accessor :config, :template_dir, :out_dir
 
@@ -16,12 +19,16 @@ class SourceGenerator
     @config = config
   end
 
+  # configに格納されたテーブル情報と
+  # テンプレートファイルから
+  # ソースファイルを生成する
   def generate
     setup
     collect_tables
     output
   end
 
+  # ソースファイル生成の準備
   def setup
     ActiveRecord::Base.establish_connection config['database']
     AdapterLoader.load config['database']
@@ -30,18 +37,14 @@ class SourceGenerator
     @out_dir      = config['out_dir']
   end
 
+  # データベースに接続し
+  # テーブル情報を収集する
   def collect_tables
     @tables = TableDefinition.collect config['tables']
-    if DEBUG
-      @tables.each do |t|
-        puts "-- #{t.table_name}"
-        t.columns.each do |c|
-          puts " #{c.name} #{c.type} #{c.precision} #{'primary key' if c.primary}"
-        end
-      end
-    end
   end
 
+  # テンプレートファイルを読み込み
+  # ソースファイルを生成する
   def output
     template_files do |f|
       @tables.each do |table|
@@ -50,6 +53,9 @@ class SourceGenerator
     end
   end
 
+  # template_dirで定義された
+  # テンプレートファイルデイレクトリから
+  # テンプレートファイルを取得する
   def template_files
     files = []
     Dir.glob("#{@template_dir}/**/*") do |f|
@@ -61,6 +67,10 @@ class SourceGenerator
     files
   end
 
+  # ソースファイルを出力する
+  #
+  # [table]    データベースの1テーブル
+  # [template] テンプレートファイル
   def out(table, template)
     m      = TypeMapper.load_mapper template
     erb    = ERB.new(File.read(File.expand_path(template, @template_dir)), nil, '-')

@@ -1,5 +1,9 @@
 class JavaTypeMapper < TypeMapper
 
+  def name(column)
+    column.name.camelize(:lower)
+  end
+  
   def type_string
     'String'
   end

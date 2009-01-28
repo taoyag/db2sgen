@@ -24,15 +24,24 @@ class TypeMapper
   end
 
   def file_name(table, filename)
-    name     = table.table_name.capitalize
+    name     = table.table_name.camelize
     dirname  = File.dirname(filename)
     basename = File.basename(filename)
 
-    File.join dirname, basename.sub(/_?[Tt]able_?/, name)
+    name = nil
+    case basename
+    when /table/
+      name = basename.sub(/table[^_]/, table.table_name.camelize(:lower))
+    when /Table/
+      name = basename.sub(/Table/, table.table_name.camelize)
+    when /_?table_?/
+      name = basename.sub(/(_?)table(_?)/, "\1#{table.table_name}\2")
+    end
+    File.join dirname, name
   end
 
   def class_name(table)
-    table.table_name.capitalize
+    table.table_name.camelize
   end
 
   def type_name(column)

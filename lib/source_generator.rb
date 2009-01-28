@@ -63,7 +63,7 @@ class SourceGenerator
 
   def out(table, template)
     m      = TypeMapper.load_mapper template
-    erb    = ERB.new(File.read(File.expand_path(template, @template_dir)))
+    erb    = ERB.new(File.read(File.expand_path(template, @template_dir)), nil, '-')
     r_file = File.expand_path(m.file_name(table, template), @out_dir)
     puts r_file
     FileUtils.mkdir_p(File.dirname(r_file)) unless FileTest.exist?(File.dirname(r_file))

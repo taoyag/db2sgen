@@ -1,3 +1,6 @@
+require 'rubygems'
+require 'activesupport'
+
 class TypeMapper
   class << self
     def load_mapper(filename)
@@ -31,11 +34,9 @@ class TypeMapper
     name = nil
     case basename
     when /table/
-      name = basename.sub(/table[^_]/, table.table_name.camelize(:lower))
+      name = basename.sub(/table/, table.table_name.camelize(:lower) + '\1')
     when /Table/
       name = basename.sub(/Table/, table.table_name.camelize)
-    when /_?table_?/
-      name = basename.sub(/(_?)table(_?)/, "\1#{table.table_name}\2")
     end
     File.join dirname, name
   end

@@ -1,8 +1,8 @@
 class TypeMapper
   class << self
     def load_mapper(filename)
-      unless File.extname filename
-        TypeMapper.new
+      if File.extname(filename) == ""
+        return TypeMapper.new
       end
 
       ext = File.extname filename

@@ -20,6 +20,6 @@ class TableDefinition
 
   def initialize(table_name, columns)
     @table_name = table_name
-    @columns = columns
+    @columns    = columns
   end
 end

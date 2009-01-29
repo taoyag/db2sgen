@@ -54,6 +54,7 @@ describe TypeMapper, "#name(column) :" do
     @m.name(@column).should == @column.name
   end
 end
+
 describe TypeMapper, "#type_name(column) :" do
   before(:each) do
     @column = Column.new

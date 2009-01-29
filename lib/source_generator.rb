@@ -2,6 +2,7 @@ require 'rubygems'
 require 'activerecord'
 require 'erb'
 require 'fileutils'
+require 'logger'
 
 require File.expand_path('definitions', File.dirname(__FILE__))
 require File.expand_path('type_mapper', File.dirname(__FILE__))
@@ -40,6 +41,7 @@ class SourceGenerator
   # データベースに接続し
   # テーブル情報を収集する
   def collect_tables
+    log "collect table definitions..."
     @tables = TableDefinition.collect config['tables']
   end
 
@@ -47,6 +49,7 @@ class SourceGenerator
   # ソースファイルを生成する
   def output
     template_files do |f|
+      log "load template file. #{f}"
       @tables.each do |table|
         out table, f
       end
@@ -72,13 +75,32 @@ class SourceGenerator
   # [table]    データベースの1テーブル
   # [template] テンプレートファイル
   def out(table, template)
-    m      = TypeMapper.load_mapper template
-    erb    = ERB.new(File.read(File.expand_path(template, @template_dir)), nil, '-')
-    r_file = File.expand_path(m.file_name(table, template), @out_dir)
-    puts r_file
-    FileUtils.mkdir_p(File.dirname(r_file)) unless FileTest.exist?(File.dirname(r_file))
-    File.open(r_file, "w") do |f|
+    m    = load_mapper template
+    erb  = setup_erb   template
+    file = setup_file  table, template, m
+
+    File.open(file, "w") do |f|
       f.write erb.result(binding)
+      log "output file. #{file}"
     end
+  end
+
+  def log(message)
+    @logger ||= Logger.new(STDOUT)
+    @logger.info(message)
+  end
+
+  def load_mapper(template)
+    TypeMapper.load_mapper template
+  end
+  
+  def setup_erb(template)
+    ERB.new(File.read(File.expand_path(template, @template_dir)), nil, '-')
+  end
+
+  def setup_file(table, template, mapper)
+    file = File.expand_path(mapper.file_name(table, template), @out_dir)
+    FileUtils.mkdir_p(File.dirname(file)) unless FileTest.exist?(File.dirname(file))
+    file
   end
 end

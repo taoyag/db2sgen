@@ -27,14 +27,13 @@ class TypeMapper
   end
 
   def file_name(table, filename)
-    name     = table.table_name.camelize
     dirname  = File.dirname(filename)
     basename = File.basename(filename)
 
     name = nil
     case basename
     when /table/
-      name = basename.sub(/table/, table.table_name.camelize(:lower) + '\1')
+      name = basename.sub(/table/, table.table_name.camelize(:lower))
     when /Table/
       name = basename.sub(/Table/, table.table_name.camelize)
     end

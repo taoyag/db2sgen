@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+require 'rubygems'
+gem 'activerecord', '2.3.5'
 require 'yaml'
 
 require File.expand_path('lib/source_generator', File.dirname(__FILE__))

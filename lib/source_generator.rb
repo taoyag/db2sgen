@@ -43,6 +43,7 @@ class SourceGenerator
   def collect_tables
     log "collect table definitions..."
     @tables = TableDefinition.collect config['tables']
+    log "tables.size = #{@tables.size}"
   end
 
   # テンプレートファイルを読み込み

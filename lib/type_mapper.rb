@@ -45,14 +45,15 @@ class TypeMapper
   end
 
   def type_name(column)
-    send("type_#{column.type}")
+    send("type_#{column.type}", column)
   end
 
   def name(column)
     column.name
   end
 
-  def method_missing(name, &args)
+  def method_missing(name, *args)
+    puts "method_missing #{name}"
     if /^type_(.+)$/ =~ name.to_s
       $1
     else
